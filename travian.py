@@ -167,7 +167,7 @@ def main():
 
         print('Dummp bot is running...')
         sleep_time = client.dummy_bot()
-        print('Dummp bot is sleeping...')
+        print('Dummp bot is going to sleep for %d secs...' % sleep_time)
         time.sleep(sleep_time)
 
     return 0
