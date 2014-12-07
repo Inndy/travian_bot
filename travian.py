@@ -38,11 +38,13 @@ class TravianClient(object):
         else:
             return False
 
-    def request_dorf1(self, response = None):
-        if not response:
-            response = self.session.get(self.config.url('dorf1.php'))
+    def request_dorf1(self, cache = True):
+        if cache and self.last_dorf1:
+            return self.last_dorf1
+        response = self.session.get(self.config.url('dorf1.php'))
         text = self._strip_tag(response.text)
-        return bs4.BeautifulSoup(text)
+        self.last_dorf1 = bs4.BeautifulSoup(text)
+        return self.last_dorf1
 
     def info(self, response = None):
         if not response:
