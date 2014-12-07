@@ -168,7 +168,7 @@ class TravianConfig(object):
         if base_url[-1] != '/': base_url += '/'
         data['base_url'] = base_url
 
-        self.min_wait_time = 15
+        self.min_wait_time = 11
         self.additional_wait_time = 2
 
         for key, value in data.items():
