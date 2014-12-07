@@ -148,21 +148,31 @@ class TravianClient(object):
 
 
 class TravianConfig(object):
-    def __init__(self, base_url, username, password):
+    def __init__(self, data):
         """ Travian client configure object
 
-            base_url    Ex: http://220.132.233.59/tra/
-            username	Username
-            password	Password
+            base_url                Ex: http://220.132.233.59/tra/
+            username                Username
+            password                Password
+            min_wait_time           Minimal waiting time
+            additional_wait_time    Additional wait time
         """
 
-        if base_url[-1] != '/':
-            base_url += '/'
-        self.base_url = base_url
-        self.username = username
-        self.password = password
+        # check for essential config
+        loss = []
+        for required in 'base_url username password'.split():
+            if required not in data: loss.append(required)
+        if loss: raise KeyError('Keys not found (%s)' % ', '.join(loss))
+
+        base_url = data['base_url']
+        if base_url[-1] != '/': base_url += '/'
+        data['base_url'] = base_url
+
         self.min_wait_time = 15
         self.additional_wait_time = 2
+
+        for key, value in data.items():
+            setattr(self, key, value)
 
     def url(self, url):
         if url[0] == '/':
@@ -183,8 +193,7 @@ def main():
             'username': input('Usename: '),
             'password': getpass.getpass()
         }
-    config = TravianConfig(settings['base_url'], settings['username'],
-                           settings['password'])
+    config = TravianConfig(settings)
     client = TravianClient(config)
     if not client.login():
         return 'Login failed'
