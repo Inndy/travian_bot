@@ -212,6 +212,8 @@ if __name__ == '__main__':
         result = main()
     except KeyboardInterrupt:
         print("Goodbye.", file = sys.stderr)
+        exit()
+
     if result:
         print(result, file = sys.stderr)
     else:
