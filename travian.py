@@ -21,6 +21,7 @@ class TravianClient(object):
     def http_get(self, url):
         if not (url.startswith("http://") or url.startswith("https://")):
             url = self.config.url(url)
+        time.sleep(self.config.request_interval)
         return self.session.get(url)
 
     def _strip_tag(self, text):
@@ -156,6 +157,7 @@ class TravianConfig(object):
             password                Password
             min_wait_time           Minimal waiting time
             additional_wait_time    Additional wait time
+            request_interval        Delay after request
         """
 
         # check for essential config
@@ -170,6 +172,7 @@ class TravianConfig(object):
 
         self.min_wait_time = 11
         self.additional_wait_time = 2
+        self.request_interval = 1
 
         for key, value in data.items():
             setattr(self, key, value)
