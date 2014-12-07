@@ -16,6 +16,9 @@ class TravianClient(object):
         self.config = config
         self.session = requests.Session()
 
+    def _strip_tag(self, text):
+        return text.replace('</body>', '').replace('</html>', '')
+
     def login(self):
         response = self.session.get(self.config.url('login.php'))
         model = bs4.BeautifulSoup(response.text)
@@ -37,7 +40,7 @@ class TravianClient(object):
     def request_dorf1(self, response = None):
         if not response:
             response = self.session.get(self.config.url('dorf1.php'))
-        text = response.text.replace('</body>', '').replace('</html>', '')
+        text = self._strip_tag(response.text)
         return bs4.BeautifulSoup(text)
 
     def info(self, response = None):
