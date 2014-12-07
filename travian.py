@@ -98,7 +98,7 @@ class TravianClient(object):
             t, _, lv = title.split()
             self.resource_farm.append((t, int(lv), area.get('href')))
 
-    def upgrade_resrouce(self, obj):
+    def upgrade_resource(self, obj):
         response = self.http_get(obj[2])
         model = bs4.BeautifulSoup(self._strip_tag(response.text))
         build = model.find('a', { 'class': 'build' })
@@ -129,7 +129,7 @@ class TravianClient(object):
         if len(self.timers) < 2:
             # Find out minimal level
             m = min(self.resource_farm, key = lambda obj: obj[1])
-            print(self.upgrade_resrouce(m))
+            print(self.upgrade_resource(m))
 
         if len(self.timers) > 1:
             timers = [ self.timer_to_seconds(t) for t in self.timers ]
