@@ -110,7 +110,10 @@ class TravianClient(object):
             return False
 
     def timer_to_seconds(self, timer):
-        timer = [ int(m) for m in timer.split(':') ]
+        timer = timer.split(':')
+        for i, v in enumerate(timer):
+            if '-' in v: v = '-' + v.split('-')[-1]
+            timer[i] = int(v)
         return timer[0] * 3600 + timer[1] * 60 + timer [2]
 
     def get_villages(self):
