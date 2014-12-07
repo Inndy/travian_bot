@@ -74,12 +74,12 @@ class TravianClient(object):
     def parse_resource_farm(self, model):
         m = model.find('map', { 'id': 'rx' })
         if not m: return None
-        self.resrouce_farm
+        self.resource_farm = []
         for area in m.find_all('area'):
             title = area.get('title')
             if 'Level' not in title: continue
             t, _, lv = title.split()
-            self.resrouce_farm.append((t, lv, area.get('href')))
+            self.resource_farm.append((t, lv, area.get('href')))
 
 
 
