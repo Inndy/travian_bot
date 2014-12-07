@@ -101,6 +101,10 @@ class TravianClient(object):
         else:
             return False
 
+    def timer_to_seconds(self, timer):
+        timer = [ int(m) for m in timer.split(':') ]
+        return timer[0] * 3600 + timer[1] * 60 + timer [2]
+
     def dummy_bot(self):
         model = self.request_dorf1()
         self.parse_resource_farm(model)
@@ -108,6 +112,12 @@ class TravianClient(object):
             # Find out minimal level
             m = min(self.resource_farm, key = lambda obj: obj[1])
             print(self.upgrade_resrouce(m))
+
+        if len(self.timers) > 0:
+            timers = [ self.timer_to_seconds(t) for t in self.timers ]
+            return min(timers) + 5
+        else:
+            return 20
 
 
 
