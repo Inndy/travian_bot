@@ -119,7 +119,9 @@ class TravianClient(object):
         self.villages = [ (m.text, m.get('href')) for m in villages ]
 
     def goto_village(self, village):
-        self.http_get(village[1])
+        url = village[1]
+        if url[0] == '?': url = 'dorf1.php' + url
+        self.http_get(url)
 
     def dummy_bot(self):
         model = self.request_dorf1()
