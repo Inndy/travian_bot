@@ -94,6 +94,14 @@ class TravianClient(object):
         else:
             return False
 
+    def dummy_bot(self):
+        model = self.request_dorf1()
+        self.parse_resource_farm(model)
+        if len(self.timers) < 2:
+            # Find out minimal level
+            m = min(self.resource_farm, key = lambda obj: obj[1])
+            print(self.upgrade_resrouce(m))
+
 
 
 
