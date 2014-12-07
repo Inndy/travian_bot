@@ -187,7 +187,7 @@ def main():
         v = input("Choose one village: ")
         try:
             v = int(v) - 1
-            village = client.villages[i - 1]
+            village = client.villages[i]
         except ValueError:
             return "Not a valid number"
         except IndexError:
