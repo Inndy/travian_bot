@@ -29,9 +29,7 @@ class TravianClient(object):
             's1.y': 0
         }
         response = self.session.post(self.config.url('login.php'), data = data)
-        self.last_response = response
         if TravianPageStatus.SIG_LOGIN_FAILED not in response.text:
-            self.last_info = response
             return True
         else:
             return False
@@ -63,7 +61,6 @@ class TravianClient(object):
                              recursive = True)
             self.resources.append([ int(n) for n in res.text.split('/') ])
 
-        self.last_info = response
         return response
 
     def dump_status(self):
