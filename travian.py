@@ -38,6 +38,9 @@ class TravianClient(object):
         else:
             return False
 
+    def clean_cache(self):
+        del self.last_dorf1
+
     def request_dorf1(self, cache = True):
         if cache and self.last_dorf1:
             return self.last_dorf1
