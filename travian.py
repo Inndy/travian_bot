@@ -177,6 +177,21 @@ def main():
     client = TravianClient(config)
     if not client.login():
         return 'Login failed'
+
+    client.get_villages()
+    if len(client.villages) > 1:
+        for i, (name, url) in enumerate(client.villages):
+            print("%2d. %s" % (i + 1, name))
+        v = input("Choose one village: ")
+        try:
+            v = int(v) - 1
+            village = client.villages[i - 1]
+        except ValueError:
+            return "Not a valid number"
+        except IndexError:
+            return "Village not exists (Index out of bound)"
+        client.goto_village(village)
+
     while True:
         client.info()
         client.dump_status()
