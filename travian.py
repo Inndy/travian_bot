@@ -112,6 +112,15 @@ class TravianClient(object):
         timer = [ int(m) for m in timer.split(':') ]
         return timer[0] * 3600 + timer[1] * 60 + timer [2]
 
+    def get_villages(self):
+        self.villages = []
+        model = self.request_dorf1()
+        villages = model.select('#vlist tr td a')[1:]
+        self.villages = [ (m.text, m.get('href')) for m in villages ]
+
+    def goto_village(self, village):
+        self.http_get(village[1])
+
     def dummy_bot(self):
         model = self.request_dorf1()
         self.parse_resource_farm(model)
