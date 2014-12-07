@@ -69,10 +69,16 @@ class TravianClient(object):
 
     def dump_status(self):
         result = []
+        result.append("=== Resources ===")
         for i, (m, n) in enumerate(self.resources):
             result.append("%s: %d / %d" %
                           (TravianClient.RESOURCES_NAME[i], m, n))
+        result.append("")
+
+        result.append("=== Timers ===")
         result += self.timers
+        result.append("")
+
         print("\n".join(result))
 
     def parse_resource_farm(self, model):
