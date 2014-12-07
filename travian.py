@@ -96,7 +96,7 @@ class TravianClient(object):
             title = area.get('title')
             if 'Level' not in title: continue
             t, _, lv = title.split()
-            self.resource_farm.append((t, lv, area.get('href')))
+            self.resource_farm.append((t, int(lv), area.get('href')))
 
     def upgrade_resrouce(self, obj):
         response = self.http_get(obj[2])
