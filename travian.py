@@ -18,11 +18,16 @@ class TravianClient(object):
         self.session = requests.Session()
         self.last_dorf1 = None
 
+    def http_get(self, url):
+        if not (url.startswith("http://") or url.startswith("https://")):
+            url = self.config.url(url)
+        return self.session.get(url)
+
     def _strip_tag(self, text):
         return text.replace('</body>', '').replace('</html>', '')
 
     def login(self):
-        response = self.session.get(self.config.url('login.php'))
+        response = self.http_get('login.php')
         model = bs4.BeautifulSoup(response.text)
         inp = model.find('input', attrs = { 'type': 'hidden', 'name': 'ft' })
         ft = inp.get('value')
@@ -45,7 +50,7 @@ class TravianClient(object):
     def request_dorf1(self, cache = True):
         if cache and self.last_dorf1:
             return self.last_dorf1
-        response = self.session.get(self.config.url('dorf1.php'))
+        response = self.http_get('dorf1.php')
         text = self._strip_tag(response.text)
         self.last_dorf1 = bs4.BeautifulSoup(text)
         return self.last_dorf1
@@ -94,11 +99,11 @@ class TravianClient(object):
             self.resource_farm.append((t, lv, area.get('href')))
 
     def upgrade_resrouce(self, obj):
-        response = self.session.get(self.config.url(obj[2]))
+        response = self.http_get(obj[2])
         model = bs4.BeautifulSoup(self._strip_tag(response.text))
         build = model.find('a', { 'class': 'build' })
         if build and build.get('href'):
-            self.session.get(self.config.url(build.get('href')))
+            self.http_get(build.get('href'))
             return True
         else:
             return False
