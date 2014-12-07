@@ -1,4 +1,5 @@
 import bs4
+import json
 import requests
 
 class TravianPageStatus(object):
@@ -51,11 +52,19 @@ class TravianConfig(object):
 
 
 def main():
-    import getpass
-    base_url = input('Base URL: ')
-    username = input('Usename: ')
-    password = getpass.getpass()
-    config = TravianConfig(base_url, username, password)
+    try:
+        fobj = open('settings.json', 'r')
+        settings = json.load(fobj)
+        print("Setting was load from settings.json")
+    except IOError:
+        import getpass
+        settings = {
+            'base_url': input('Base URL: '),
+            'username': input('Usename: '),
+            'password': getpass.getpass()
+        }
+    config = TravianConfig(settings['base_url'], settings['username'],
+                           settings['password'])
     client = TravianClient(config)
     if not client.login():
         return 'Login failed'
