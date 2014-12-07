@@ -133,9 +133,11 @@ class TravianClient(object):
 
         if len(self.timers) > 1:
             timers = [ self.timer_to_seconds(t) for t in self.timers ]
-            return min(timers) + 5
+            t = min(timers) + self.config.additional_wait_time
+            t = max(t, self.config.min_wait_time)
+            return t
         else:
-            return 20
+            return self.config.min_wait_time
 
 
 
@@ -154,6 +156,8 @@ class TravianConfig(object):
         self.base_url = base_url
         self.username = username
         self.password = password
+        self.min_wait_time = 15
+        self.additional_wait_time = 2
 
     def url(self, url):
         if url[0] == '/':
