@@ -16,6 +16,7 @@ class TravianClient(object):
         """
         self.config = config
         self.session = requests.Session()
+        self.last_dorf1 = None
 
     def _strip_tag(self, text):
         return text.replace('</body>', '').replace('</html>', '')
@@ -39,7 +40,7 @@ class TravianClient(object):
             return False
 
     def clean_cache(self):
-        del self.last_dorf1
+        self.last_dorf1 = None
 
     def request_dorf1(self, cache = True):
         if cache and self.last_dorf1:
@@ -67,8 +68,6 @@ class TravianClient(object):
             res = model.find('td', attrs = { 'id': 'l' + str(i) },
                              recursive = True)
             self.resources.append([ int(n) for n in res.text.split('/') ])
-
-        return response
 
     def dump_status(self):
         result = []
