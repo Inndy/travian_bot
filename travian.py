@@ -205,11 +205,11 @@ def main():
     return 0
 
 if __name__ == '__main__':
+    import sys
     try:
         result = main()
     except KeyboardInterrupt:
         print("Goodbye.", file = sys.stderr)
-    import sys
     if result:
         print(result, file = sys.stderr)
     else:
