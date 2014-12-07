@@ -74,6 +74,7 @@ class TravianClient(object):
             res = model.find('td', attrs = { 'id': 'l' + str(i) },
                              recursive = True)
             self.resources.append([ int(n) for n in res.text.split('/') ])
+        self.resources.reverse()
 
     def dump_status(self):
         result = []
