@@ -49,10 +49,8 @@ class TravianClient(object):
         self.last_dorf1 = bs4.BeautifulSoup(text)
         return self.last_dorf1
 
-    def info(self, response = None):
-        if not response:
-            response = self.session.get(self.config.url('dorf1.php'))
-        model = self.request_dorf1(response)
+    def info(self):
+        model = self.request_dorf1()
 
         # Parse tiemr data
         self.timers = []
