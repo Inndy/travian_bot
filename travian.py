@@ -193,6 +193,7 @@ def main():
         client.goto_village(village)
 
     while True:
+        client.request_dorf1(False) # Don't use cache
         client.info()
         client.dump_status()
 
