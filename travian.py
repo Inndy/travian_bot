@@ -205,7 +205,10 @@ def main():
     return 0
 
 if __name__ == '__main__':
-    result = main()
+    try:
+        result = main()
+    except KeyboardInterrupt:
+        print("Goodbye.", file = sys.stderr)
     import sys
     if result:
         print(result, file = sys.stderr)
