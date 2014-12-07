@@ -161,13 +161,14 @@ def main():
     client = TravianClient(config)
     if not client.login():
         return 'Login failed'
-    client.info()
-    client.dump_status()
     while True:
+        client.info()
+        client.dump_status()
+
         print('Dummp bot is running...')
-        client.dummy_bot()
+        sleep_time = client.dummy_bot()
         print('Dummp bot is sleeping...')
-        time.sleep(5)
+        time.sleep(sleep_time)
 
     return 0
 
