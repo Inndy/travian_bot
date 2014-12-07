@@ -113,7 +113,7 @@ class TravianClient(object):
             m = min(self.resource_farm, key = lambda obj: obj[1])
             print(self.upgrade_resrouce(m))
 
-        if len(self.timers) > 0:
+        if len(self.timers) > 1:
             timers = [ self.timer_to_seconds(t) for t in self.timers ]
             return min(timers) + 5
         else:
