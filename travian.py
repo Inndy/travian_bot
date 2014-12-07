@@ -84,6 +84,16 @@ class TravianClient(object):
             t, _, lv = title.split()
             self.resource_farm.append((t, lv, area.get('href')))
 
+    def upgrade_resrouce(self, obj):
+        response = self.session.get(self.config.url(obj[2]))
+        model = bs4.BeautifulSoup(self._strip_tag(response.text))
+        build = model.find('a', { 'class': 'build' })
+        if build and build.get('href'):
+            self.session.get(self.config.url(build.get('href')))
+            return True
+        else:
+            return False
+
 
 
 
