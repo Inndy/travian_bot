@@ -1,6 +1,7 @@
 import bs4
 import json
 import requests
+import time
 
 class TravianPageStatus(object):
     SIG_LOGIN_FAILED = '''<input class="text" type="password" name="pw" value=""'''
@@ -146,6 +147,11 @@ def main():
         return 'Login failed'
     client.info()
     client.dump_status()
+    while True:
+        print('Dummp bot is running...')
+        client.dummy_bot()
+        print('Dummp bot is sleeping...')
+        time.sleep(5)
 
     return 0
 
