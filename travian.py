@@ -18,11 +18,16 @@ class TravianClient(object):
         self.session = requests.Session()
         self.last_dorf1 = None
 
-    def http_get(self, url):
+    def http_get(self, url, build_model = False):
         if not (url.startswith("http://") or url.startswith("https://")):
             url = self.config.url(url)
         time.sleep(self.config.request_interval)
-        return self.session.get(url)
+        if build_model:
+            response = self.session.get(url)
+            text = self._strip_tag(response.text)
+            return bs4.BeautifulSoup(text)
+        else:
+            return self.session.get(url)
 
     def _strip_tag(self, text):
         return text.replace('</body>', '').replace('</html>', '')
