@@ -169,6 +169,7 @@ class TravianConfig(object):
 class TravianResourceFarmingBot(object):
     def __init__(self, client):
         self.client = client
+        self.fail_count = 0
 
     def run(self):
         model = self.client.request_dorf1()
@@ -178,12 +179,17 @@ class TravianResourceFarmingBot(object):
             m = min(self.client.resource_farm, key = lambda obj: obj[1])
             result = self.client.upgrade_resource(m)
             print(result if result else 'Upgrade failed.. (%s)' % m[0])
+            if not result:
+                self.fail_count += 1
 
         if len(self.client.timers) > 1:
             timers = [ self.client.timer_to_seconds(t) for t in self.client.timers ]
             t = min(timers) + self.client.config.additional_wait_time
             t = max(t, self.client.config.min_wait_time)
             return t
+        elif self.fail_count > 10:
+            self.fail_count = 0
+            return self.client.config.min_wait_time + 180
         else:
             return self.client.config.min_wait_time
 
