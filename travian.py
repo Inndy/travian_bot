@@ -129,23 +129,6 @@ class TravianClient(object):
         if url[0] == '?': url = 'dorf1.php' + url
         self.http_get(url)
 
-    def dummy_bot(self):
-        model = self.request_dorf1()
-        self.parse_resource_farm(model)
-        if len(self.timers) < 2:
-            # Find out minimal level
-            m = min(self.resource_farm, key = lambda obj: obj[1])
-            result = self.upgrade_resource(m)
-            print(result if result else 'Upgrade failed.. (%s)' % m[0])
-
-        if len(self.timers) > 1:
-            timers = [ self.timer_to_seconds(t) for t in self.timers ]
-            t = min(timers) + self.config.additional_wait_time
-            t = max(t, self.config.min_wait_time)
-            return t
-        else:
-            return self.config.min_wait_time
-
 
 
 
@@ -183,6 +166,37 @@ class TravianConfig(object):
             url = url[1:]
         return self.base_url + url
 
+class TravianResourceFarmingBot(object):
+    def __init__(self, client):
+        self.client = client
+
+    def run(self):
+        model = self.client.request_dorf1()
+        self.client.parse_resource_farm(model)
+        if len(self.client.timers) < 2:
+            # Find out minimal level
+            m = min(self.client.resource_farm, key = lambda obj: obj[1])
+            result = self.client.upgrade_resource(m)
+            print(result if result else 'Upgrade failed.. (%s)' % m[0])
+
+        if len(self.client.timers) > 1:
+            timers = [ self.client.timer_to_seconds(t) for t in self.client.timers ]
+            t = min(timers) + self.client.config.additional_wait_time
+            t = max(t, self.client.config.min_wait_time)
+            return t
+        else:
+            return self.client.config.min_wait_time
+
+    def run_forever(self):
+        while True:
+            self.client.request_dorf1(False) # Don't use cache
+            self.client.info()
+            self.client.dump_status()
+
+            print('Resource farming bot is running...')
+            sleep_time = self.run()
+            print('Resource farming bot is going to sleep for %d secs...' % sleep_time)
+            time.sleep(sleep_time)
 
 
 def main():
@@ -231,15 +245,8 @@ def main():
             return "Village not exists (Index out of bound)"
         client.goto_village(village)
 
-    while True:
-        client.request_dorf1(False) # Don't use cache
-        client.info()
-        client.dump_status()
-
-        print('Dummy bot is running...')
-        sleep_time = client.dummy_bot()
-        print('Dummy bot is going to sleep for %d secs...' % sleep_time)
-        time.sleep(sleep_time)
+    bot = TravianResourceFarmingBot(client)
+    bot.run_forever()
 
     return 0
 
