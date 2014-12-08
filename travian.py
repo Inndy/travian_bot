@@ -197,6 +197,21 @@ def main():
             'username': input('Usename: '),
             'password': getpass.getpass()
         }
+
+    if type(settings) is list:
+        for i, setting in enumerate(settings):
+            print("%2d. %s" % (i + 1, setting['username']))
+        i = input("Choose one account: ")
+        try:
+            i = int(i) - 1
+            settings = settings[i]
+        except ValueError:
+            return "Not a valid number"
+        except IndexError:
+            return "Account not exists (Index out of bound)"
+    elif type(settings) is not dict:
+        return "Invalid configfile"
+
     config = TravianConfig(settings)
     client = TravianClient(config)
     if not client.login():
