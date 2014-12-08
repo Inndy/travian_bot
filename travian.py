@@ -245,7 +245,23 @@ def main():
             return "Village not exists (Index out of bound)"
         client.goto_village(village)
 
-    bot = TravianResourceFarmingBot(client)
+    bots = [ TravianResourceFarmingBot ]
+    if len(bots) == 1:
+        Bot = bots[0]
+    else:
+        for i, bot in enumerate(bots):
+            print("%.2d. %s" % (i + 1, bot.__name__))
+        v = input("Choose one bot: ")
+        try:
+            v = int(v) - 1
+            Bot = bots[v]
+        except ValueError:
+            return "Not a valid number"
+        except IndexError:
+            return "Bot not exists (Index out of bound)"
+
+    print("%s is serving..." % Bot.__name__)
+    bot = Bot(client)
     bot.run_forever()
 
     return 0
