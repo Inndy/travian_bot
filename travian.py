@@ -118,10 +118,6 @@ class TravianClient(object):
             resource_farm.append((t, int(lv), area.get('href')))
         return resource_farm
 
-    def parse_building(self, model):
-        m = model.select('map.map2#map2')
-        if not m: return None
-
     def upgrade_resource(self, obj):
         model = self.http_get(obj[2], True)
         build = model.find('a', { 'class': 'build' })
