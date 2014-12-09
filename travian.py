@@ -232,6 +232,7 @@ class TravianUpgradeBuildBot(object):
         self.client = client
 
     def run(self):
+        self.fail_count = 0
         for build in self.builds:
             print("Trying %s ..." % str(build))
             model = self.client.http_get(build[2], True)
@@ -247,6 +248,18 @@ class TravianUpgradeBuildBot(object):
                 time.sleep(self.client.config.min_wait_time)
 
         self.client.request_dorf2(False)
+        self.client.info_dorf2()
+
+        if len(self.client.timers) > 1:
+            timers = [ self.client.timer_to_seconds(t) for t in self.client.timers ]
+            t = min(timers) + self.client.config.additional_wait_time
+            t = max(t, self.client.config.min_wait_time)
+            return t
+        elif self.fail_count > 10:
+            self.fail_count = 0
+            return self.client.config.min_wait_time + 180
+        else:
+            return self.client.config.min_wait_time
 
     def run_forever(self):
         model = self.client.request_dorf2()
