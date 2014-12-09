@@ -81,7 +81,7 @@ class TravianClient(object):
 
     def info_dorf1(self):
         model = self.request_dorf1()
-        self.timers = self.parse_timers()
+        self.timers = self.parse_timers(model)
         self.resources = self.parse_resources(model)
 
     def dump_resources(self):
