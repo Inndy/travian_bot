@@ -79,6 +79,12 @@ class TravianClient(object):
         timers = model.select('#building_contract tbody tr td span')
         return [ t.text for t in timers ]
 
+    def parse_buildings(self, model):
+        areas = model.select('map#map2 area')
+        areas = ( (a.get('title').split(), a.get('href')) for a in areas )
+        buildings = ( (a[0][::2], a[1]) for a in areas if a[0][1] == 'Level' )
+        return [ (a[0][0], int(a[0][1]), a[1]) for a in buildings ]
+
     def info_dorf1(self):
         model = self.request_dorf1()
         self.timers = self.parse_timers(model)
