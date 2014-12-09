@@ -33,8 +33,7 @@ class TravianClient(object):
         return text.replace('</body>', '').replace('</html>', '')
 
     def login(self):
-        response = self.http_get('login.php')
-        model = bs4.BeautifulSoup(response.text)
+        model = self.http_get('login.php', True)
         inp = model.find('input', attrs = { 'type': 'hidden', 'name': 'ft' })
         ft = inp.get('value')
         data = {
@@ -56,9 +55,7 @@ class TravianClient(object):
     def request_dorf1(self, cache = True):
         if cache and self.last_dorf1:
             return self.last_dorf1
-        response = self.http_get('dorf1.php')
-        text = self._strip_tag(response.text)
-        self.last_dorf1 = bs4.BeautifulSoup(text)
+        self.last_dorf1 = self.http_get('dorf1.php', True)
         return self.last_dorf1
 
     def info(self):
@@ -106,8 +103,7 @@ class TravianClient(object):
             self.resource_farm.append((t, int(lv), area.get('href')))
 
     def upgrade_resource(self, obj):
-        response = self.http_get(obj[2])
-        model = bs4.BeautifulSoup(self._strip_tag(response.text))
+        model = self.http_get(obj[2], True)
         build = model.find('a', { 'class': 'build' })
         if build and build.get('href'):
             self.http_get(build.get('href'))
