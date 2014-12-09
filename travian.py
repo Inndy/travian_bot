@@ -93,6 +93,11 @@ class TravianClient(object):
         self.timers = self.parse_timers(model)
         self.resources = self.parse_resources(model)
 
+    def info_dorf2(self):
+        model = self.request_dorf2()
+        self.timers = self.parse_timers(model)
+        self.buildings = self.parse_buildings(model)
+
     def dump_resources(self):
         result = []
         result.append("=== Resources ===")
