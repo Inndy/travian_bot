@@ -58,27 +58,33 @@ class TravianClient(object):
         self.last_dorf1 = self.http_get('dorf1.php', True)
         return self.last_dorf1
 
-    def info(self):
-        model = self.request_dorf1()
+    def request_dorf2(self, cache = True):
+        if cache and self.last_dorf2:
+            return self.last_dorf2
+        self.last_dorf2 = self.http_get('dorf2.php', True)
+        return self.last_dorf2
 
-        # Parse tiemr data
-        self.timers = []
-        for i in range(1, 10):
-            timer = model.find('span', attrs = { 'id': 'timer' + str(i) })
-            if timer:
-                self.timers.append(timer.text)
-            else:
-                break
-
-        # Parse resources data
-        self.resources = []
+    def parse_resources(self, model):
+        resources = []
         for i in range(1, 5):
-            res = model.find('td', attrs = { 'id': 'l' + str(i) },
-                             recursive = True)
-            self.resources.append([ int(n) for n in res.text.split('/') ])
-        self.resources.reverse()
+            res = model.find('td', attrs = { 'id': 'l' + str(i) })
+            if res:
+                resources.append([ int(n) for n in res.text.split('/') ])
+            else:
+                resources.append([0, 0])
+        resources.reverse()
+        return resources
 
-    def dump_status(self):
+    def parse_timers(self, model):
+        timers = model.select('#building_contract tbody tr td span')
+        return [ t.text for t in timers ]
+
+    def info_dorf1(self):
+        model = self.request_dorf1()
+        self.timers = self.parse_timers()
+        self.resources = self.parse_resources(model)
+
+    def dump_resources(self):
         result = []
         result.append("=== Resources ===")
         for i, (m, n) in enumerate(self.resources):
@@ -93,14 +99,19 @@ class TravianClient(object):
         print("\n".join(result))
 
     def parse_resource_farm(self, model):
-        m = model.find('map', { 'id': 'rx' })
-        if not m: return None
-        self.resource_farm = []
-        for area in m.find_all('area'):
+        m = model.select('map#rx')
+        if not m: return []
+        resource_farm = []
+        for area in m[0].find_all('area'):
             title = area.get('title')
             if 'Level' not in title: continue
             t, _, lv = title.split()
-            self.resource_farm.append((t, int(lv), area.get('href')))
+            resource_farm.append((t, int(lv), area.get('href')))
+        return resource_farm
+
+    def parse_building(self, model):
+        m = model.select('map.map2#map2')
+        if not m: return None
 
     def upgrade_resource(self, obj):
         model = self.http_get(obj[2], True)
@@ -174,7 +185,7 @@ class TravianResourceFarmingBot(object):
 
     def run(self):
         model = self.client.request_dorf1()
-        self.client.parse_resource_farm(model)
+        self.resource_farm = self.client.parse_resource_farm(model)
         if len(self.client.timers) < 2:
             # Find out minimal level
             m = min(self.client.resource_farm, key = lambda obj: obj[1])
@@ -197,8 +208,8 @@ class TravianResourceFarmingBot(object):
     def run_forever(self):
         while True:
             self.client.request_dorf1(False) # Don't use cache
-            self.client.info()
-            self.client.dump_status()
+            self.client.info_dorf1()
+            self.client.dump_resources()
 
             print('Resource farming bot is running...')
             sleep_time = self.run()
