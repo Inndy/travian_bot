@@ -140,10 +140,9 @@ class TravianClient(object):
         return timer[0] * 3600 + timer[1] * 60 + timer [2]
 
     def get_villages(self):
-        self.villages = []
         model = self.request_dorf1()
         villages = model.select('#vlist tr td a')[1:]
-        self.villages = [ (m.text, m.get('href')) for m in villages ]
+        return [ (m.text, m.get('href')) for m in villages ]
 
     def goto_village(self, village):
         url = village[1]
@@ -258,14 +257,14 @@ def main():
     if not client.login():
         return 'Login failed'
 
-    client.get_villages()
-    if len(client.villages) > 1:
-        for i, (name, url) in enumerate(client.villages):
+    villages = client.get_villages()
+    if len(villages) > 1:
+        for i, (name, url) in enumerate(villages):
             print("%2d. %s" % (i + 1, name))
         v = input("Choose one village: ")
         try:
             v = int(v) - 1
-            village = client.villages[v]
+            village = villages[v]
         except ValueError:
             return "Not a valid number"
         except IndexError:
