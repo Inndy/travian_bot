@@ -17,6 +17,7 @@ class TravianClient(object):
         self.config = config
         self.session = requests.Session()
         self.last_dorf1 = None
+        self.last_dorf2 = None
         self.timer = []
         self.buildings = []
         self.resources = []
