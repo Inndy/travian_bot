@@ -257,7 +257,7 @@ def main():
         Bot = bots[0]
     else:
         for i, bot in enumerate(bots):
-            print("%.2d. %s" % (i + 1, bot.__name__))
+            print("%2d. %s" % (i + 1, bot.__name__))
         v = input("Choose one bot: ")
         try:
             v = int(v) - 1
