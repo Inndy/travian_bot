@@ -100,6 +100,7 @@ class TravianClient(object):
 
     def dump_resources(self):
         result = []
+
         result.append("=== Resources ===")
         for i, (m, n) in enumerate(self.resources):
             result.append("%s: %d / %d" %
