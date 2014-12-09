@@ -290,9 +290,7 @@ def main():
 
     print("%s is serving..." % Bot.__name__)
     bot = Bot(client)
-    bot.run_forever()
-
-    return 0
+    return bot.run_forever()
 
 if __name__ == '__main__':
     import sys
