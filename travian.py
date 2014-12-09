@@ -227,6 +227,55 @@ class TravianResourceFarmingBot(object):
             print('Resource farming bot is going to sleep for %d secs...' % sleep_time)
             time.sleep(sleep_time)
 
+class TravianUpgradeBuildBot(object):
+    def __init__(self, client):
+        self.client = client
+
+    def run(self):
+        for build in self.builds:
+            print("Trying %s ..." % str(build))
+            model = self.client.http_get(build[2], True)
+            try:
+                url = model.select('a.build')[0].get('href')
+            except:
+                print("Failed to upgrade ...")
+                print("Wait for next try ...")
+                time.sleep(self.client.config.request_interval * 2)
+            else:
+                self.client.last_dorf2 = self.client.http_get(url, True)
+                print("Success to upgrade ...")
+                time.sleep(self.client.config.min_wait_time)
+
+        self.client.request_dorf2(False)
+
+    def run_forever(self):
+        model = self.client.request_dorf2()
+        buildings = self.client.parse_buildings(model)
+
+        for i, (name, lv, _) in enumerate(buildings):
+            print("%2d. %s (lv. %-2d)" % (i + 1, name, lv))
+
+        while True:
+            upgrade_builds = input("Which buildings you want to upgrade? ")
+            try:
+                upgrade_builds = [ int(n) for n in upgrade_builds.split() ]
+            except ValueError:
+                pass
+            else:
+                break
+
+        self.builds = [ buildings[i - 1] for i in upgrade_builds ]
+
+        while True:
+            self.client.request_dorf2(False) # Don't use cache
+            self.client.info_dorf2()
+            self.client.dump_resources()
+
+            print('Upgrade build bot is running...')
+            sleep_time = self.run()
+            print('Upgrade build bot is going to sleep for %d secs...' % sleep_time)
+            time.sleep(sleep_time)
+
 
 def main():
     try:
@@ -274,7 +323,7 @@ def main():
             return "Village not exists (Index out of bound)"
         client.goto_village(village)
 
-    bots = [ TravianResourceFarmingBot ]
+    bots = [ TravianResourceFarmingBot, TravianUpgradeBuildBot ]
     if len(bots) == 1:
         Bot = bots[0]
     else:
