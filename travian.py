@@ -17,6 +17,9 @@ class TravianClient(object):
         self.config = config
         self.session = requests.Session()
         self.last_dorf1 = None
+        self.timer = []
+        self.buildings = []
+        self.resources = []
 
     def http_get(self, url, build_model = False):
         if not (url.startswith("http://") or url.startswith("https://")):
