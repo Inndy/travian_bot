@@ -139,7 +139,10 @@ class TravianClient(object):
         timer = timer.split(':')
         for i, v in enumerate(timer):
             if '-' in v: v = '-' + v.split('-')[-1]
-            timer[i] = int(v)
+            try:
+                timer[i] = int(v)
+            except ValueError:
+                timer[i] = 0
         return timer[0] * 3600 + timer[1] * 60 + timer [2]
 
     def get_villages(self):
