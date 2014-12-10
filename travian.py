@@ -200,7 +200,7 @@ class TravianResourceFarmingBot(object):
 
     def run(self):
         model = self.client.request_dorf1()
-        self.resource_farm = self.client.parse_resource_farm(model)
+        self.client.resource_farm = self.client.parse_resource_farm(model)
         if len(self.client.timers) < 2:
             # Find out minimal level
             m = min(self.client.resource_farm, key = lambda obj: obj[1])
