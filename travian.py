@@ -81,7 +81,8 @@ class TravianClient(object):
 
     def parse_timers(self, model):
         timers = model.select('#building_contract tbody tr td span')
-        return [ t.text for t in timers ]
+        return [ t.text for t in timers if t.get('class') and
+                                           'timer' in t.get('class') ]
 
     def parse_buildings(self, model):
         areas = model.select('map#map2 area')
